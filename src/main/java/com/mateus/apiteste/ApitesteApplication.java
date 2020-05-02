@@ -1,5 +1,6 @@
 package com.mateus.apiteste;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,20 @@ import com.mateus.apiteste.domain.Cidade;
 import com.mateus.apiteste.domain.Cliente;
 import com.mateus.apiteste.domain.Endereco;
 import com.mateus.apiteste.domain.Estado;
+import com.mateus.apiteste.domain.Pagamento;
+import com.mateus.apiteste.domain.PagamentoComBoleto;
+import com.mateus.apiteste.domain.PagamentoComCartao;
+import com.mateus.apiteste.domain.Pedido;
 import com.mateus.apiteste.domain.Produto;
+import com.mateus.apiteste.domain.enums.EstadoPagamento;
 import com.mateus.apiteste.domain.enums.TipoCliente;
 import com.mateus.apiteste.repositories.CategoriaRepository;
 import com.mateus.apiteste.repositories.CidadeRepository;
 import com.mateus.apiteste.repositories.ClienteRepository;
 import com.mateus.apiteste.repositories.EnderecoRepository;
 import com.mateus.apiteste.repositories.EstadoRepository;
+import com.mateus.apiteste.repositories.PagamentoRepository;
+import com.mateus.apiteste.repositories.PedidoRepository;
 import com.mateus.apiteste.repositories.ProdutoRepository;
 import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
@@ -42,6 +50,12 @@ public class ApitesteApplication implements CommandLineRunner{
 	
 	@Autowired 
 	private EnderecoRepository enderecoRepository;
+	
+	@Autowired
+	private PedidoRepository pedidoRepository;
+	
+	@Autowired
+	private PagamentoRepository pagamentoRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(ApitesteApplication.class, args);
@@ -97,6 +111,26 @@ public class ApitesteApplication implements CommandLineRunner{
 		// salva os dados
 		clienteRepository.saveAll(Arrays.asList(cli1));
 		enderecoRepository.saveAll(Arrays.asList(e1,e2));
+		
+		
+		// Inserindo pedidos
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		
+		Pedido ped1 = new Pedido(null, sdf.parse("30/09/2017 10:32"), cli1, e1);
+		Pedido ped2 = new Pedido(null, sdf.parse("10/10/2017 19:35"), cli1, e2);
+		
+		Pagamento pagto1 = new PagamentoComCartao(null, EstadoPagamento.QUIDADO, ped1, 6);
+		// seta o pagamento no pedido
+		ped1.setPagamento(pagto1);
+		
+		Pagamento pagto2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, ped2, sdf.parse("20/10/2017 00:00"), null);
+		ped2.setPagamento(pagto2);
+		
+		cli1.getPedidos().addAll(Arrays.asList(ped1,ped2));
+		
+		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
+		pagamentoRepository.saveAll(Arrays.asList(pagto1, pagto2));
+		
 	}
 	
 	
