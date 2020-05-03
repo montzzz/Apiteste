@@ -12,6 +12,7 @@ import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.OnDelete;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.mateus.apiteste.domain.enums.EstadoPagamento;
 
 @Entity
@@ -28,6 +29,7 @@ public abstract class Pagamento implements Serializable {
 	@OneToOne
 	@JoinColumn(name="pedido_id")
 	@MapsId
+	@JsonBackReference
 	private Pedido pedido;
 	
 	public Pagamento() {
