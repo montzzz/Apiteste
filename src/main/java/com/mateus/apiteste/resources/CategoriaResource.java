@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.serviceloader.ServiceFactoryBean;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,7 +40,8 @@ public class CategoriaResource {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST)
-	public ResponseEntity<Void> insert(@RequestBody Categoria obj){
+	public ResponseEntity<Void> insert(@Valid @RequestBody CategoriaDTO objDto){
+		Categoria obj = service.fromDto(objDto);
 		obj = service.insert(obj);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 					.path("/{id}").buildAndExpand(obj.getId()).toUri();
@@ -47,7 +51,9 @@ public class CategoriaResource {
 	}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
-	public ResponseEntity<Void> update(@RequestBody Categoria obj, @PathVariable Integer id){
+	public ResponseEntity<Void> update(@Valid @RequestBody CategoriaDTO objDto, @PathVariable Integer id){
+		Categoria obj = service.fromDto(objDto);
+		
 		obj.setId(id);
 		obj = service.update(obj);
 		
@@ -76,7 +82,7 @@ public class CategoriaResource {
 			@RequestParam(value="linesPerPage", defaultValue="24") Integer linesPerPage, 
 			@RequestParam(value="orderBy", defaultValue="nome") String orderBy, 
 			@RequestParam(value="direction", defaultValue="ASC") String direction) {
-		// procura todas as categorias e armazena em uma Page
+		// procura as categorias e armazena em uma Page (passando os prm pelo request)
 		Page<Categoria> list = service.findPage(page, linesPerPage, orderBy, direction);
 		// Transforma a page recebida para o objeto DTO
 		Page<CategoriaDTO> listDto = list.map(obj -> new CategoriaDTO(obj));
