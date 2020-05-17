@@ -25,8 +25,7 @@ import com.mateus.apiteste.services.CategoriaService;
 
 @RestController
 @RequestMapping(value="/categorias")
-public class CategoriaResource {
-	
+public class CategoriaResource {	
 	
 	@Autowired
 	private CategoriaService service;
@@ -46,8 +45,7 @@ public class CategoriaResource {
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 					.path("/{id}").buildAndExpand(obj.getId()).toUri();
 		
-		return ResponseEntity.created(uri).build();
-		
+		return ResponseEntity.created(uri).build();		
 	}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
