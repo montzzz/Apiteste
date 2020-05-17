@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.mateus.apiteste.domain.Categoria;
+import com.mateus.apiteste.domain.Cliente;
 import com.mateus.apiteste.dto.CategoriaDTO;
 import com.mateus.apiteste.repositories.CategoriaRepository;
 import com.mateus.apiteste.services.exceptions.DataIntegrityException;
@@ -35,8 +36,9 @@ public class CategoriaService {
 	
 	public Categoria update(Categoria obj) {
 		// verifico se o obj existe
-		find(obj.getId());
-		return repo.save(obj);		
+		Categoria newObj = find(obj.getId()); 
+		updateData(newObj, obj);
+		return repo.save(newObj);		
 	}
 	
 	public void delete(Integer id) {
@@ -61,6 +63,10 @@ public class CategoriaService {
 	
 	public Categoria fromDto(CategoriaDTO objDto) {
 		return new Categoria(objDto.getId(), objDto.getNome());
+	}
+	
+	private void updateData(Categoria newObj, Categoria obj){
+		newObj.setNome(obj.getNome());	
 	}
 
 }
