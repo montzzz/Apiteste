@@ -9,7 +9,9 @@ import org.hibernate.validator.constraints.Length;
 
 
 import com.mateus.apiteste.domain.Cliente;
+import com.mateus.apiteste.services.validation.ClienteUpdate;
 
+@ClienteUpdate
 public class ClienteDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
