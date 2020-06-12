@@ -57,6 +57,17 @@ public class Pedido  implements Serializable {
 		this.enderecoDeEntrega = enderecoDeEntrega;
 	}
 
+	
+	// get para calcular o valor total, com base na lista de itens do pedido
+	public double getValorTotal() {
+		double soma = 0;
+		
+		for (ItemPedido p : itens) {
+			soma =	soma + p.getSubTotal();
+		}
+		
+		return soma;
+	}
 
 	public Integer getId() {
 		return id;
@@ -142,9 +153,4 @@ public class Pedido  implements Serializable {
 			return false;
 		return true;
 	}
-
-
-	
-	
-	
 }
