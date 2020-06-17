@@ -1,4 +1,4 @@
-package com.mateus.apiteste.Config;
+package com.mateus.apiteste.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
