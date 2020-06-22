@@ -9,6 +9,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,6 +40,9 @@ public class ClienteService {
 	
 	@Autowired
 	private S3Service s3Service;
+	
+	@Autowired
+	private BCryptPasswordEncoder pe;
 	
 	
 	public Cliente find(Integer id) {
@@ -83,11 +87,11 @@ public class ClienteService {
 	}
 	
 	public Cliente fromDto(ClienteDTO objDto) {
-		return new Cliente(objDto.getId(), objDto.getNome(), objDto.getEmail(), null, null);
+		return new Cliente(objDto.getId(), objDto.getNome(), objDto.getEmail(), null, null, null);
 	}
 	
 	public Cliente fromDto(ClienteNewDTO objDto) {
-		Cliente cli = new Cliente(null, objDto.getNome(), objDto.getEmail(), objDto.getCpfOuCnpj(), TipoCliente.toEnum(objDto.getTipo()));
+		Cliente cli = new Cliente(null, objDto.getNome(), objDto.getEmail(), objDto.getCpfOuCnpj(), TipoCliente.toEnum(objDto.getTipo()), /*faz o encode da senha*/pe.encode(objDto.getSenha()));
 		Optional<Cidade> cid = cidadeRepository.findById(objDto.getCidadeId());
 		Endereco end = new Endereco(null, objDto.getLogradouro(), objDto.getNumero(), objDto.getComplemento(), objDto.getBairro(), objDto.getCep(), cli, cid.get());
 		cli.getEndereco().add(end);
