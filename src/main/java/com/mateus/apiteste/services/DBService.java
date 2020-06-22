@@ -20,6 +20,7 @@ import com.mateus.apiteste.domain.PagamentoComCartao;
 import com.mateus.apiteste.domain.Pedido;
 import com.mateus.apiteste.domain.Produto;
 import com.mateus.apiteste.domain.enums.EstadoPagamento;
+import com.mateus.apiteste.domain.enums.Perfil;
 import com.mateus.apiteste.domain.enums.TipoCliente;
 import com.mateus.apiteste.repositories.CategoriaRepository;
 import com.mateus.apiteste.repositories.CidadeRepository;
@@ -124,19 +125,25 @@ public class DBService {
 		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
 
 		// Inserindo cliente
-		Cliente cli1 = new Cliente(null, "Maria Silva", "mariasilva@gmail.com", "0000000", TipoCliente.PESSOAFISICA, pe.encode("123"));
+		Cliente cli1 = new Cliente(null, "Maria Silva", "mariasilva@gmail.com", "60473693089", TipoCliente.PESSOAFISICA, pe.encode("123"));
 		cli1.getTelefones().addAll(Arrays.asList("9999999", "11651561"));
+		
+		Cliente cli2 = new Cliente(null, "Joao da Silva", "teste@gmail.com", "06969335003", TipoCliente.PESSOAFISICA, pe.encode("123"));
+		cli2.addPerfil(Perfil.ADMIN);
+		cli2.getTelefones().addAll(Arrays.asList("123213", "113132233"));
 
 		// Endereços
 		Endereco e1 = new Endereco(null, "Rua Flores", "300", "Apto 303", "Jardim", "89120000", cli1, c1);
 		Endereco e2 = new Endereco(null, "Rua Flores2", "301", "Apto 301", "Centro", "89130000", cli1, c2);
+		Endereco e3 = new Endereco(null, "Rua Seloko", "132", "Apto 111", "Centro", "89120000", cli2, c2);
 
 		// Associa os endereços ao cliente
 		cli1.getEndereco().addAll(Arrays.asList(e1, e2));
+		cli2.getEndereco().addAll(Arrays.asList(e3));
 
 		// salva os dados
-		clienteRepository.saveAll(Arrays.asList(cli1));
-		enderecoRepository.saveAll(Arrays.asList(e1, e2));
+		clienteRepository.saveAll(Arrays.asList(cli1, cli2));
+		enderecoRepository.saveAll(Arrays.asList(e1, e2, e3));
 
 		// Inserindo pedidos
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
