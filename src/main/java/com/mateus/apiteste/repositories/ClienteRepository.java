@@ -12,7 +12,7 @@ import com.mateus.apiteste.domain.Cliente;
 public interface ClienteRepository extends JpaRepository<Cliente, Integer>{
 	
 	@Transactional(readOnly=true)
-	List<Cliente> findByEmail(String email);
+	Cliente findByEmail(String email);
 	
 
 }

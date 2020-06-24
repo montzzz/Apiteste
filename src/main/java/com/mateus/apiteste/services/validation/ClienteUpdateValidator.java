@@ -20,47 +20,45 @@ import com.mateus.apiteste.resources.exceptions.FieldMessage;
 import com.mateus.apiteste.services.validation.utils.BR;
 
 public class ClienteUpdateValidator implements ConstraintValidator<ClienteUpdate, ClienteDTO> {
-	
+
 	@Autowired
 	private HttpServletRequest request;
-	
+
 	@Override
 	public void initialize(ClienteUpdate ann) {
-		
+
 	}
-	
+
 	@Autowired
 	private ClienteRepository repo;
-	
+
 	@Override
 	public boolean isValid(ClienteDTO objDto, ConstraintValidatorContext context) {
-		
-		// Cria um URI para buscar o valor de parametro informado no request (Exemplo: http://localhost/8080/clientes/2, onde 2 é o prm)
-		Map<String, String> map = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+
+		// Cria um URI para buscar o valor de parametro informado no request (Exemplo:
+		// http://localhost/8080/clientes/2, onde 2 é o prm)
+		Map<String, String> map = (Map<String, String>) request
+				.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
 		Integer uriID = Integer.parseInt(map.get("id"));
-		
+
 		// Cria a lista de erro
 		List<FieldMessage> list = new ArrayList<>();
-		
-		List<Cliente> aux = new ArrayList<Cliente>();
-		aux = repo.findByEmail(objDto.getEmail());
-		
-		for (int i = 0; i < aux.size(); i++) {
-			// caso o ID seja diferente do prm, valida
-			if ((aux.get(i).getId() != uriID) && (objDto.getEmail().equals(aux.get(i).getEmail()))) {
-				list.add(new FieldMessage("Email", "Email já cadastrado para outro cliente!"));
-				break;
-			}
+
+		Cliente aux = repo.findByEmail(objDto.getEmail());
+
+		// caso o ID seja diferente do prm, valida
+		if ((aux.getId() != uriID) && (objDto.getEmail().equals(aux.getEmail()))) {
+			list.add(new FieldMessage("Email", "Email já cadastrado para outro cliente!"));
 		}
-		
+
 		// inclusão dos erros (for em cima da lista gerada).
 		for (FieldMessage e : list) {
 			context.disableDefaultConstraintViolation();
-			context.buildConstraintViolationWithTemplate(e.getMessage()).addPropertyNode(e.getFieldName()).addConstraintViolation();
+			context.buildConstraintViolationWithTemplate(e.getMessage()).addPropertyNode(e.getFieldName())
+					.addConstraintViolation();
 		}
-		
+
 		return list.isEmpty();
 	}
-	
 
 }
