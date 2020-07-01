@@ -19,6 +19,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.mateus.apiteste.security.JWTAuthenticationFilter;
+import com.mateus.apiteste.security.JWTAuthorizationFilter;
 import com.mateus.apiteste.security.JWTUtil;
 
 @Configuration
@@ -46,21 +47,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			"/categorias/**"
 	};
 	
+	private static final String[] PUBLIC_MATCHERS_POST = {
+			"/clientes/**",
+			"/auth/forgot/**"
+	};
+	
 	
 	// SOBRESCREVENDO METODO CONFIGURE, PARA CONFIGURAR A AUTENTICAÇÃO
 	@Override
-	protected void configure(HttpSecurity http) throws Exception{
+	protected void configure(HttpSecurity http) throws Exception {
 		
 		if (Arrays.asList(env.getActiveProfiles()).contains("test")) {
-			http.headers().frameOptions().disable();
-		}
+            http.headers().frameOptions().disable();
+        }
 		
 		http.cors().and().csrf().disable();
 		http.authorizeRequests()
-		.antMatchers(PUBLIC_MATCHERS).permitAll()
-		.antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
-		.anyRequest().authenticated();
-		http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));		
+			.antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
+			.antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
+			.antMatchers(PUBLIC_MATCHERS).permitAll()
+			.anyRequest().authenticated();
+		http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));
+		http.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService));
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 	
