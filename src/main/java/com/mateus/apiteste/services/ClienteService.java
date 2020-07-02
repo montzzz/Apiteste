@@ -17,12 +17,15 @@ import org.springframework.web.multipart.MultipartFile;
 import com.mateus.apiteste.domain.Cidade;
 import com.mateus.apiteste.domain.Cliente;
 import com.mateus.apiteste.domain.Endereco;
+import com.mateus.apiteste.domain.enums.Perfil;
 import com.mateus.apiteste.domain.enums.TipoCliente;
 import com.mateus.apiteste.dto.ClienteDTO;
 import com.mateus.apiteste.dto.ClienteNewDTO;
 import com.mateus.apiteste.repositories.CidadeRepository;
 import com.mateus.apiteste.repositories.ClienteRepository;
 import com.mateus.apiteste.repositories.EnderecoRepository;
+import com.mateus.apiteste.security.UserSS;
+import com.mateus.apiteste.services.exceptions.AuthorizationException;
 import com.mateus.apiteste.services.exceptions.DataIntegrityException;
 import com.mateus.apiteste.services.exceptions.ObjectNotfoundException;
 
@@ -46,6 +49,12 @@ public class ClienteService {
 	
 	
 	public Cliente find(Integer id) {
+		
+		UserSS user = UserService.authenticated();
+		
+		if (user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
+			throw new AuthorizationException("Acesso negado!");
+		}
 		
 		Optional<Cliente> obj = repo.findById(id);
 		return obj.orElseThrow(() -> new ObjectNotfoundException("Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName()));

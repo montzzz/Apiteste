@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.mateus.apiteste.services.exceptions.AuthorizationException;
 import com.mateus.apiteste.services.exceptions.DataIntegrityException;
 import com.mateus.apiteste.services.exceptions.FileException;
 import com.mateus.apiteste.services.exceptions.ObjectNotfoundException;
@@ -75,5 +76,13 @@ public class ResourceExceptionHandler {
 		
 		StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());		
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+	}
+	
+	@ExceptionHandler(AuthorizationException.class)
+	public ResponseEntity<StandardError> authorization(AuthorizationException e, HttpServletRequest request){
+		
+		StandardError error = new StandardError(HttpStatus.FORBIDDEN.value(), e.getMessage(), System.currentTimeMillis());
+		
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
 	}
 }
