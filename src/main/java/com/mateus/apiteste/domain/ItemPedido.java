@@ -111,6 +111,22 @@ public class ItemPedido implements Serializable {
 	public double getSubTotal() {
 		return ((preco - desconto) * quantidade);
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append(getProduto().getNome());
+		builder.append(",  Qtde: ");
+		builder.append(getQuantidade());
+		builder.append(", Preço Un:");
+		builder.append(getPreco());
+		builder.append(", SubTotal: ");
+		builder.append(getSubTotal());
+		builder.append("\n");
+		return builder.toString();
+	}
+	
+	
 	
 	
 }
