@@ -45,6 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	// CAMINHOS PARA RECUPERAR OS DADOS
 	private static final String[] PUBLIC_MATCHERS_GET = {
+			"/clientes/**",
 			"/produtos/**",
 			"/categorias/**"
 	};
